@@ -5,7 +5,19 @@ import {
   serial,
   text,
   timestamp,
+  pgEnum,
 } from "drizzle-orm/pg-core";
+
+export const gender = pgEnum("gender", [
+  "male",
+  "female",
+  "non-binary",
+  "genderqueer",
+  "transgender",
+  "agender",
+  "bigender",
+  "other",
+]);
 
 export const countries = pgTable("countries", {
   id: serial("id").notNull().primaryKey(),
@@ -42,7 +54,7 @@ export const users = pgTable("users", {
   trial_end_time: timestamp("trial_end_time"),
   billing_id: integer("billing_id").references(() => billing.id),
   email_notification: boolean("email_notification").notNull().default(true),
-  gender: text("gender").default("male"),
+  gender: gender("gender").default("male"),
   tow_factor_auth: boolean("tow_factor_auth").default(false),
   otp_id: text("otp_id").unique(),
 });
