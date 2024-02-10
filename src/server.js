@@ -14,7 +14,7 @@ const port = process.env.PORT || 8080;
 //^ Routes
 app.use("/api/demo", demoRouter);
 
-app.get("/", async (req, res) => {
+app.get("/", async (_req, res) => {
   try {
     res.json({ message: "Server is Running" });
     const data = await query("select * from sample where id=$1", [1]);
@@ -28,6 +28,6 @@ app.get("/", async (req, res) => {
 
 app.listen(port, () => {
   console.log(
-    `server started on port http://127.0.0.1:${port} or http://localhost:${port}`
+    `[server]: server started on port http://127.0.0.1:${port} or http://localhost:${port}`
   );
 });
