@@ -1,33 +1,29 @@
 import express from "express";
+import bodyParser from "body-parser";
+import cors from "cors";
+import morgan from "morgan";
 import dotenv from "dotenv";
-
-import { query } from "./configs/db.config.js";
-
-//^ Routers
-import demoRouter from "./routes/demo-route.js";
-
 dotenv.config();
+
+//^ routes
+import authRouter from "./routes/auth.js";
 
 const app = express();
 const port = process.env.PORT || 8080;
 
-//^ Routes
-app.use("/api/demo", demoRouter);
+//^ body-parser
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
-app.get("/", async (_req, res) => {
-  try {
-    res.json({ message: "Server is Running" });
-    const data = await query("select * from sample where id=$1", [1]);
-    console.log(data);
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json({ message: "Internal server error", error });
-  }
-  res.json({ message: "Server is Running" });
-});
+//^ morgan
+app.use(morgan(":method :url :status :res[content-length] - :response-time ms"));
+
+//^ cors
+app.use(cors({ origin: "*" }));
+
+//^ routes
+app.use("/api/auth", authRouter);
 
 app.listen(port, () => {
-  console.log(
-    `[server]: server started on port http://127.0.0.1:${port} or http://localhost:${port}`
-  );
+  console.log(`[server]: server started on port http://127.0.0.1:${port} or http://localhost:${port}`);
 });
