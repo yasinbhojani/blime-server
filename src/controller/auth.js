@@ -9,12 +9,12 @@ export const normalLoginHandler = async (req, res) => {
     const { email, username, password } = req.body;
 
     let findCredentials;
-    let user_name = username;
+    let user_name = username.toLowerCase();
 
     if (email !== undefined) {
       findCredentials = await Users.findAll({
         where: {
-          email,
+          email: email.toLowerCase(),
         },
       });
     }
@@ -58,7 +58,13 @@ export const normalRegistrationHandler = async (req, res) => {
     const user = { user_name, first_name, last_name, email };
     const token = generateAccessToken(user);
 
-    const resp = await Users.create({ user_name, first_name, last_name, email, password: hashedPassword });
+    const resp = await Users.create({
+      user_name: user_name.toLowerCase(),
+      first_name: first_name.toLowerCase(),
+      last_name: last_name.toLowerCase(),
+      email: email.toLowerCase(),
+      password: hashedPassword,
+    });
 
     res.status(200).json({ message: "success", token, result: resp });
   } catch (error) {
