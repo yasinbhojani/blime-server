@@ -1,12 +1,11 @@
 import express from "express";
-import Users from "./models/users.model.js";
 import cors from "cors";
 import morgan from "morgan";
 import dotenv from "dotenv";
+import authRouter from "./routes/auth.js";
 
 dotenv.config();
 
-import authRouter from "./routes/auth.js";
 
 const app = express();
 const port = process.env.PORT || 8080;
