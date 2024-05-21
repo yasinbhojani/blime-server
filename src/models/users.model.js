@@ -18,6 +18,6 @@ const Users = sequelize.define("Users", {
   password: { type: DataTypes.TEXT, allowNull: false },
 });
 
-Users.sync({ alter: true });
+// Users.sync({ alter: true });
 // Users.sync();
 export default Users;
