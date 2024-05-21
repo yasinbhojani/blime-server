@@ -1,5 +1,4 @@
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
 import Users from "../models/users.model.js";
 import generateAccessToken from "../utils/token.util.js";
 
@@ -9,7 +8,6 @@ export const normalLoginHandler = async (req, res) => {
     const { email, username, password } = req.body;
 
     let findCredentials;
-    let user_name = username.toLowerCase();
 
     if (email !== undefined) {
       findCredentials = await Users.findAll({
@@ -22,7 +20,7 @@ export const normalLoginHandler = async (req, res) => {
     if (username !== undefined) {
       findCredentials = await Users.findAll({
         where: {
-          user_name,
+          user_name: username.toLowerCase(),
         },
       });
     }
