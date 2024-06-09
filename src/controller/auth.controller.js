@@ -1,6 +1,7 @@
 import bcrypt from "bcrypt";
 import Users from "../models/users.model.js";
-import generateAccessToken from "../utils/token.util.js";
+import { generateAccessToken } from "../utils/token.util.js";
+import { v4 } from "uuid";
 
 export const loginHandler = async (req, res) => {
   try {
@@ -33,7 +34,7 @@ export const loginHandler = async (req, res) => {
     if (findCredentials.length <= 0) return res.status(400).json({ message: "wrong credentials" });
 
     bcrypt.compare(password, findCredentials[0].password, (err, result) => {
-      if (err) return res.status(500).json({ message: "An error occured" });
+      if (err) return res.status(500).json({ message: "An error occurred" });
       if (!result) return res.status(400).json({ message: "Incorrect Password" });
       else {
         // delete encrypted pass from object
@@ -62,7 +63,8 @@ export const registrationHandler = async (req, res) => {
       return res.status(400).json({ message: "one or more fields missing for registration" });
     }
 
-    const user_name = `${first_name}_${last_name}`;
+    const user_name = email.split("@")[0];
+    const user_id = v4();
 
     // check is email already exists
     const accounts = await Users.findAll({
@@ -76,10 +78,11 @@ export const registrationHandler = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const user = { user_name, first_name, last_name, email };
+    const user = { user_id, user_name, first_name, last_name, email };
     const token = generateAccessToken(user);
 
     const resp = await Users.create({
+      user_id,
       user_name: user_name.trim().toLowerCase(),
       first_name: first_name.trim(),
       last_name: last_name.trim(),
